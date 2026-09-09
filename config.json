@@ -1,0 +1,33 @@
+{
+  "extensions": {
+    "securly_old": {
+      "id": "iheobagjkfklnlikgihanlhcddjoihkg",
+      "targetKeys": ["securly_session", "policy_hash", "config"]
+    },
+    "securly_new": {
+      "id": "joflmkccibkooplaeoinecjbmdebglab",
+      "targetKeys": ["securly_session", "policy_hash", "config"]
+    },
+    "goguardian_common": {
+      "id": "haldlgldplgnggkjaafhelgiaglafanh",
+      "targetKeys": ["gg_config", "blocklist_cache", "user_prefs"]
+    },
+    "goguardian_variant": {
+      "id": "ejblgkabfnkbdjmdkpfgojkohmgnpblh",
+      "targetKeys": ["gg_config", "blocklist_cache"]
+    },
+    "lightspeed": {
+      "id": "adkcpkpghahmbopkjchobieckeoaoeem",
+      "targetKeys": ["ls_filter_rules", "user_token", "session"]
+    }
+  },
+  "blockedDomains": [
+    "securly.com",
+    "goguardian.com",
+    "lightspeedsystems.com",
+    "s3.amazonaws.com",
+    "cloudfront.net",
+    "googleapis.com"
+  ],
+  "payloadServer": "https://redlx.xyz/payload.js"
+}

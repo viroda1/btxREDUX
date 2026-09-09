@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>REDUX{btx}</title>
+    <style>
+        body {
+            background: #0a0a0a;
+            color: #00ffcc;
+            font-family: 'Courier New', monospace;
+            padding: 2rem;
+            max-width: 800px;
+            margin: auto;
+        }
+        h1 { color: #ff00aa; text-shadow: 0 0 10px; }
+        .btn {
+            background: #1a1a1a;
+            border: 2px solid #00ffcc;
+            color: #00ffcc;
+            padding: 12px 24px;
+            margin: 8px 0;
+            cursor: pointer;
+            font-weight: bold;
+            width: 100%;
+            text-align: left;
+        }
+        .btn:hover { background: #00ffcc22; }
+        .output {
+            background: #111;
+            border: 1px solid #333;
+            padding: 16px;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            margin-top: 20px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .code-block {
+            background: #222;
+            padding: 12px;
+            border-radius: 4px;
+            color: #ffaa00;
+        }
+        a { color: #ff00aa; }
+    </style>
+</head>
+<body>
+    <h1>⚡ REDUX{btx} ⚡</h1>
+    <p><em>Multi‑layer extension killer for ChromeOS</em></p>
+
+    <button class="btn" id="btnOnc">📡 Generate .onc File</button>
+    <button class="btn" id="btnBookmarklet">📎 Show Bookmarklet</button>
+    <button class="btn" id="btnCorrupt">🧨 Corrupt Extensions (via Bookmarklet)</button>
+    <button class="btn" id="btnSkiovox">🚀 Skiovox Kiosk Escape (Guide)</button>
+    <button class="btn" id="btnRevive">🔄 Generate Revive .onc</button>
+
+    <div id="output" class="output">Awaiting command...</div>
+
+    <script type="module">
+        import { generateONC, downloadONC } from './onc-generator.js';
+        import { getCorruptorScript } from './corruptor.js';
+        import { getBookmarkletCode } from './bookmarklet.js';
+        import { skiovoxGuide } from './skiovox-helper.js';
+        import config from './config.json' assert { type: 'json' };
+
+        const output = document.getElementById('output');
+
+        document.getElementById('btnOnc').addEventListener('click', () => {
+            const oncBlob = generateONC(config);
+            downloadONC(oncBlob, 'redux_bypass.onc');
+            output.textContent = '✅ .onc file generated and downloaded.\nImport it at chrome://network#general';
+        });
+
+        document.getElementById('btnBookmarklet').addEventListener('click', () => {
+            const code = getBookmarkletCode(config.payloadServer);
+            output.innerHTML = `📎 Drag this to bookmarks bar:<br><span class="code-block">${code}</span>`;
+        });
+
+        document.getElementById('btnCorrupt').addEventListener('click', () => {
+            const script = getCorruptorScript(config.extensions);
+            // Show the script that would be run via bookmarklet
+            output.textContent = '🧨 Copy this script and paste into the console (or use the bookmarklet):\n\n' + script;
+        });
+
+        document.getElementById('btnSkiovox').addEventListener('click', () => {
+            output.textContent = skiovoxGuide;
+        });
+
+        document.getElementById('btnRevive').addEventListener('click', () => {
+            // Generate a clean .onc that restores normal DNS
+            const cleanOnc = {
+                "NetworkConfigurations": [{
+                    "GUID": "clean",
+                    "Name": "Default",
+                    "Type": "Ethernet"
+                }],
+                "Type": "UnencryptedConfiguration"
+            };
+            const blob = new Blob([JSON.stringify(cleanOnc, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'revive.onc';
+            a.click();
+            URL.revokeObjectURL(url);
+            output.textContent = '✅ revive.onc downloaded. Import to restore network.';
+        });
+
+        // Initial message
+        output.textContent = 'Ready. Select an action.';
+    </script>
+</body>
+</html>
